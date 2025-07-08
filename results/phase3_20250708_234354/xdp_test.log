@@ -1,0 +1,45 @@
+eBPF-Test Phase 3: Comprehensive Performance Testing
+====================================================
+Configuration:
+  Mode: XDP
+  Interface: lo
+  Duration: 30 seconds
+  Target PPS: 2000
+  XDP Program: build/xdp_preproc.o
+
+Starting XDP performance test...
+Interface: lo, Duration: 30 sec, Program: build/xdp_preproc.o
+XDP test started. Processing packets for 30 seconds...
+Running XDP loader command: timeout 30 ./build/xdp_loader lo build/xdp_preproc.o
+Starting XDP packet processor...
+Interface: lo
+Program: build/xdp_preproc.o
+Feature size: 22 bytes
+Loading XDP program 'build/xdp_preproc.o' on interface lo (index: 1)
+XDP program attached successfully
+Ring buffer set up successfully
+XDP packet processing started. Press Ctrl+C to stop.
+Features: 1941, PPS: 1938.0, Avg Latency: 48.2 µsFeatures: 3944, PPS: 1970.3, Avg Latency: 46.6 µsFeatures: 5946, PPS: 1979.8, Avg Latency: 45.3 µsFeatures: 7948, PPS: 1985.2, Avg Latency: 44.3 µsFeatures: 9948, PPS: 1988.2, Avg Latency: 44.3 µsFeatures: 11950, PPS: 1989.9, Avg Latency: 45.7 µsFeatures: 13952, PPS: 1991.6, Avg Latency: 46.7 µsFeatures: 15954, PPS: 1992.5, Avg Latency: 47.3 µsFeatures: 17956, PPS: 1993.5, Avg Latency: 47.8 µsFeatures: 19958, PPS: 1994.0, Avg Latency: 48.3 µsFeatures: 21960, PPS: 1994.7, Avg Latency: 48.7 µsFeatures: 23962, PPS: 1995.0, Avg Latency: 48.8 µsFeatures: 25964, PPS: 1995.6, Avg Latency: 48.7 µsFeatures: 27966, PPS: 1995.8, Avg Latency: 48.6 µsFeatures: 29968, PPS: 1996.2, Avg Latency: 48.8 µsFeatures: 31970, PPS: 1996.3, Avg Latency: 48.8 µsFeatures: 33971, PPS: 1996.6, Avg Latency: 48.7 µsFeatures: 35974, PPS: 1996.7, Avg Latency: 48.8 µsFeatures: 37976, PPS: 1997.0, Avg Latency: 49.0 µsFeatures: 39978, PPS: 1997.1, Avg Latency: 49.3 µsFeatures: 41980, PPS: 1997.3, Avg Latency: 49.6 µsFeatures: 43980, PPS: 1997.4, Avg Latency: 49.7 µsFeatures: 45982, PPS: 1997.5, Avg Latency: 49.8 µsFeatures: 47984, PPS: 1997.7, Avg Latency: 49.9 µsFeatures: 49984, PPS: 1997.8, Avg Latency: 50.0 µsFeatures: 51986, PPS: 1997.8, Avg Latency: 50.0 µsFeatures: 53988, PPS: 1997.9, Avg Latency: 49.9 µsFeatures: 55990, PPS: 1998.0, Avg Latency: 49.8 µsFeatures: 57992, PPS: 1998.1, Avg Latency: 49.9 µs
+Received signal 15, shutting down...
+
+=== XDP PERFORMANCE STATISTICS ===
+Runtime: 30.00 seconds
+
+XDP Program Counters:
+  Total packets seen: 120219
+  UDP packets found: 59940
+  Packets dropped: 60279
+
+Userspace Processing:
+  Features processed: 59940
+  Features per second: 1998.04
+  Avg end-to-end latency: 49955.47 ns (49.96 µs)
+  Min latency: 741 ns (0.74 µs)
+  Max latency: 641325 ns (641.33 µs)
+================================
+Cleaning up...
+XDP program detached
+XDP packet processor shutdown complete.
+XDP loader exited with code 31744
+
+Performance test failed with errors.

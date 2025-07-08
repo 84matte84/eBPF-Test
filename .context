@@ -1,0 +1,57 @@
+# eBPF-Test Project Context
+
+## Business Domain
+High-performance packet preprocessing for AI/ML applications requiring real-time network traffic analysis at scale.
+
+## Problem Statement
+Traditional userspace packet processing creates CPU bottlenecks and latency issues when handling 10 Gbps traffic loads. AI/ML teams need a preprocessing layer that can:
+- Parse packet headers at wire speed
+- Extract structured features with microsecond latency
+- Free up CPU cores for ML computation
+- Provide a simple integration API
+
+## Solution Approach
+Leverage XDP (eXpress Data Path) and eBPF to move packet parsing into kernel space, using ring buffers for efficient kernel-userspace communication.
+
+## Design Decisions
+
+### Technology Choices
+- **XDP over DPDK**: Staying within kernel ecosystem for better integration
+- **Ring buffers over shared memory**: Leverages BPF infrastructure
+- **CO-RE (Compile Once, Run Everywhere)**: For portability across kernel versions
+- **libbpf**: Standard library for BPF program management
+
+### Architecture Principles
+- **Module-first approach**: Prove performance before full ML integration
+- **Containerized delivery**: Easy deployment for AI/ML teams
+- **API abstraction**: Hide eBPF complexity behind simple C interface
+
+### Performance Targets
+- 10 Gbps sustained throughput
+- Microsecond-scale latency per packet
+- 5× improvement over userspace baseline
+- Efficient multi-core scaling with RSS
+
+### Feature Extraction Schema
+```c
+typedef struct {
+    uint32_t src_ip;
+    uint32_t dst_ip; 
+    uint16_t src_port;
+    uint16_t dst_port;
+    uint16_t pkt_len;
+    uint64_t timestamp;
+} feature_t;
+```
+
+## Integration Strategy
+Provide drop-in module that AI/ML teams can integrate with minimal code changes:
+1. Include header file
+2. Call attach/poll/detach functions
+3. Implement feature processing callback
+
+## Success Metrics
+- Benchmark reports showing ≥5× speedup
+- Successful 10 Gbps traffic handling
+- Clean integration API for ML teams
+- Containerized deployment working 

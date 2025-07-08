@@ -1,0 +1,38 @@
+{
+  "system_requirements": {
+    "os": "Ubuntu 22.04 or CentOS 9",
+    "kernel": "≥ 5.10",
+    "hardware": "Linux server with 10 GbE NIC (Intel X520/X540 or similar)"
+  },
+  "development_tools": {
+    "required": [
+      "clang",
+      "llvm",
+      "libbpf",
+      "bpftool", 
+      "ethtool",
+      "gcc",
+      "make"
+    ],
+    "build_system": [
+      "CMake or Makefile",
+      "libbpf-bootstrap"
+    ],
+    "testing_tools": [
+      "pktgen",
+      "iperf3"
+    ]
+  },
+  "runtime_libraries": {
+    "libbpf": "latest stable",
+    "kernel_headers": "matching running kernel"
+  },
+  "containerization": {
+    "docker": "latest",
+    "podman": "alternative option"
+  },
+  "network_tools": {
+    "ethtool": "for RSS configuration",
+    "ip": "for XDP attachment"
+  }
+} 

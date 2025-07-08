@@ -1,0 +1,48 @@
+{
+  "architecture": {
+    "type": "XDP/eBPF packet preprocessing module",
+    "layers": {
+      "kernel_space": {
+        "xdp_program": "BPF program for packet parsing and feature extraction",
+        "maps": "BPF ring buffer for kernel-userspace communication"
+      },
+      "userspace": {
+        "loader": "libbpf-based loader and event consumer",
+        "api": "C library interface for AI/ML integration"
+      }
+    }
+  },
+  "components": {
+    "src/": {
+      "xdp_preproc.c": "Main XDP program for packet processing - ✅ IMPLEMENTED",
+      "loader.c": "Userspace loader and ring buffer consumer - ✅ IMPLEMENTED", 
+      "api.c": "Public API implementation - Phase 4",
+      "include/xdp_preproc.h": "Public header file - Phase 4"
+    },
+    "benchmarks/": {
+      "baseline.c": "Traditional userspace baseline implementation",
+      "performance_test.c": "Benchmarking and comparison tools"
+    },
+    "scripts/": {
+      "setup_environment.sh": "Development environment setup - ✅ IMPLEMENTED",
+      "generate_udp_traffic.py": "Python traffic generator - ✅ IMPLEMENTED",
+      "test_xdp.sh": "XDP integration testing - ✅ IMPLEMENTED",
+      "verify_setup.sh": "System verification - ✅ IMPLEMENTED"
+    },
+    "docker/": {
+      "Dockerfile": "Container packaging",
+      "entrypoint.sh": "Container entry point"
+    }
+  },
+  "data_flow": {
+    "ingress": "Raw packets at 10 Gbps → XDP program",
+    "processing": "Header parsing → feature extraction → ring buffer",
+    "egress": "Userspace polling → callback → ML/AI integration"
+  },
+  "performance_targets": {
+    "throughput": "10 Gbps sustained",
+    "latency": "microsecond-scale per packet",
+    "efficiency": "≤ 8 cores for preprocessing",
+    "speedup": "≥ 5× vs traditional userspace"
+  }
+} 
