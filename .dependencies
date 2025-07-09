@@ -1,15 +1,15 @@
 {
   "system_requirements": {
-    "os": "Ubuntu 22.04 or CentOS 9",
-    "kernel": "≥ 5.10",
-    "hardware": "Linux server with 10 GbE NIC (Intel X520/X540 or similar)"
+    "os": "Ubuntu 22.04+ or CentOS 9+ (dst_machine), Linux/macOS (src_machine)",
+    "kernel": "≥ 5.10 (dst_machine only)",
+    "hardware": "Linux server with 10 GbE NIC (Intel X520/X540 or similar) for dst_machine"
   },
   "development_tools": {
     "required": [
       "clang",
-      "llvm",
+      "llvm", 
       "libbpf",
-      "bpftool", 
+      "bpftool",
       "ethtool",
       "gcc",
       "make"
@@ -23,16 +23,133 @@
       "iperf3"
     ]
   },
+  "two_machine_production_framework": {
+    "src_machine": {
+      "os": "Linux or macOS",
+      "python": "≥ 3.8", 
+      "core_packages": [
+        "socket",
+        "threading", 
+        "multiprocessing",
+        "argparse",
+        "yaml",
+        "requests",
+        "psutil",
+        "dataclasses",
+        "typing",
+        "logging",
+        "concurrent.futures"
+      ],
+      "optional_packages": [
+        "netifaces (for network discovery)",
+        "ujson (for faster JSON processing)"
+      ],
+      "network": "LAN connectivity to dst_machine"
+    },
+    "dst_machine": {
+      "os": "Linux (Ubuntu 22.04+)", 
+      "kernel": "≥ 5.10 with XDP support",
+      "python": "≥ 3.8",
+      "core_packages": [
+        "socket",
+        "threading",
+        "subprocess", 
+        "argparse",
+        "yaml",
+        "requests",
+        "psutil",
+        "dataclasses", 
+        "typing",
+        "logging",
+        "http.server",
+        "ctypes",
+        "mmap"
+      ],
+      "system_tools": [
+        "clang",
+        "libbpf", 
+        "bpftool",
+        "ethtool",
+        "ip",
+        "tc"
+      ],
+      "network": "NIC with XDP support (Intel X520/X540 or similar)"
+    },
+    "coordination_system": {
+      "protocol": "HTTP REST API for test coordination",
+      "ports": {
+        "coordination": 8080,
+        "test_traffic": "12345+ (configurable)",
+        "monitoring": "8081 (optional)"
+      },
+      "discovery": "Manual IP configuration or network discovery",
+      "endpoints": [
+        "/health - Health check",
+        "/status - Machine status",
+        "/config - Configuration management", 
+        "/start_test - Test initiation",
+        "/stop_test - Test termination",
+        "/results - Results collection",
+        "/metrics - Performance metrics"
+      ]
+    },
+    "performance_optimization": {
+      "memory_optimization": [
+        "Huge pages support",
+        "Network buffer tuning", 
+        "Memory mapping optimization"
+      ],
+      "cpu_optimization": [
+        "CPU affinity management",
+        "Process priority optimization",
+        "NUMA awareness"
+      ],
+      "network_optimization": [
+        "Socket buffer optimization",
+        "Interface capability detection",
+        "RSS configuration"
+      ]
+    },
+    "configuration_validation": {
+      "schema_validation": "YAML configuration schema validation",
+      "error_reporting": "Detailed field-level error reporting",
+      "consistency_checks": "Cross-section validation",
+      "type_validation": "Comprehensive type checking"
+    }
+  },
   "runtime_libraries": {
     "libbpf": "latest stable",
-    "kernel_headers": "matching running kernel"
+    "kernel_headers": "matching running kernel" 
   },
   "containerization": {
-    "docker": "latest",
-    "podman": "alternative option"
+    "docker": "latest (future phase)",
+    "podman": "alternative option (future phase)"
   },
   "network_tools": {
-    "ethtool": "for RSS configuration",
-    "ip": "for XDP attachment"
+    "ethtool": "for RSS configuration and NIC management",
+    "ip": "for XDP attachment and network configuration",
+    "tc": "for traffic control and QoS",
+    "ss": "for socket monitoring",
+    "netstat": "for network statistics"
+  },
+  "monitoring_and_profiling": {
+    "system_monitoring": [
+      "psutil for system metrics",
+      "CPU utilization tracking",
+      "Memory usage monitoring", 
+      "Network interface statistics"
+    ],
+    "performance_profiling": [
+      "Latency measurement",
+      "Throughput tracking",
+      "Packet loss detection",
+      "System resource utilization"
+    ],
+    "logging_and_metrics": [
+      "Structured logging",
+      "Performance metrics collection",
+      "Error tracking and reporting",
+      "Test result aggregation"
+    ]
   }
 } 

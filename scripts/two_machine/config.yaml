@@ -1,0 +1,222 @@
+# eBPF-Test Two-Machine Configuration
+# Configuration for realistic LAN-based XDP performance testing
+
+# Test Configuration
+test_config:
+  name: "XDP_Performance_Test"
+  description: "Two-machine XDP vs baseline performance comparison"
+  duration: 60  # Test duration in seconds
+  warmup_time: 5  # Warmup period before measurement starts
+  cooldown_time: 5  # Cooldown period after measurement ends
+
+# Traffic Generation Parameters
+traffic_config:
+  packet_rate: 10000  # Packets per second
+  packet_size: 1500   # Packet size in bytes (including headers)
+  flows: 4           # Number of concurrent UDP flows
+  threads: 2         # Number of traffic generation threads
+  
+  # Advanced traffic patterns
+  patterns:
+    - name: "constant_rate"
+      type: "constant"
+      rate: 10000
+    - name: "burst_pattern"
+      type: "burst"
+      burst_rate: 50000
+      burst_duration: 1
+      inter_burst_gap: 2
+
+# Network Configuration
+network_config:
+  # Source machine (traffic generator)
+  src_machine:
+    hostname: "macbook-src"
+    ip: "192.168.1.100"  # Will be auto-detected from MacBook
+    control_port: 8080
+    
+  # Destination machine (XDP testing)
+  dst_machine:
+    hostname: "linux-dst"
+    ip: "192.168.1.35"  # Current machine IP
+    interface: "enp5s0"  # Current machine interface
+    control_port: 8080
+    
+  # Traffic ports (will be used round-robin for multiple flows)
+  traffic_ports: [12345, 12346, 12347, 12348]
+  
+  # Network discovery (for auto-configuration)
+  discovery:
+    enabled: false
+    method: "mdns"  # "mdns" or "broadcast"
+    timeout: 10
+
+# Monitoring Configuration
+monitoring_config:
+  # Sampling rate for performance metrics
+  sample_rate: 1.0  # Seconds between samples
+  
+  # Metrics to collect
+  metrics:
+    - "cpu_usage"      # CPU utilization per core
+    - "memory_usage"   # Memory utilization
+    - "network_stats"  # Network interface statistics
+    - "xdp_stats"      # XDP program statistics
+  
+  # Real-time monitoring
+  real_time:
+    enabled: true
+    update_interval: 1.0  # Seconds
+    
+# Results Configuration
+results_config:
+  # Output directory (relative to script location)
+  output_dir: "../../results/two_machine"
+  
+  # Filename pattern
+  filename_pattern: "test_{timestamp}_{test_name}"
+  
+  # Output formats
+  formats: ["json", "csv", "markdown"]
+  
+  # Include raw data
+  include_raw_data: true
+  
+  # Comparison with baseline
+  baseline_comparison: true
+
+# XDP Configuration
+xdp_config:
+  # XDP program path (relative to dst_machine.py)
+  program_path: "../../build/xdp_preproc.o"
+  
+  # XDP program mode
+  mode: "native"  # "native", "skb", or "hw"
+  
+  # Ring buffer configuration
+  ring_buffer:
+    size: 262144  # 256KB
+    
+  # Statistics collection
+  stats:
+    collection_interval: 1.0  # Seconds
+    include_packet_samples: true
+
+# Performance Targets (for validation)
+performance_targets:
+  # Minimum performance thresholds
+  min_throughput_pps: 5000
+  max_cpu_usage_percent: 50
+  max_memory_usage_mb: 100
+  
+  # Expected improvements
+  expected_cpu_efficiency_improvement: 5.0  # 5x improvement target
+  expected_latency_reduction_percent: 80
+
+# Quality Assurance
+qa_config:
+  # Test validation
+  validation:
+    enabled: true
+    packet_loss_threshold: 0.1  # Max 0.1% packet loss
+    timing_accuracy_ms: 1.0     # Timing accuracy requirement
+  
+  # Retry configuration
+  retry:
+    max_attempts: 3
+    backoff_seconds: 5
+  
+  # Health checks
+  health_checks:
+    enabled: true
+    check_interval: 10  # Seconds
+    checks:
+      - "network_connectivity"
+      - "system_resources"
+      - "xdp_program_loaded"
+
+# Logging Configuration
+logging_config:
+  level: "INFO"  # "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"
+  
+  # File logging
+  file_logging:
+    enabled: true
+    log_file: "two_machine_test.log"
+    rotation: true
+    max_size_mb: 10
+    backup_count: 5
+  
+  # Console logging
+  console_logging:
+    enabled: true
+    colored: true
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Development/Debug Configuration
+debug_config:
+  # Enable verbose output
+  verbose: false
+  
+  # Dry run mode (no actual traffic generation)
+  dry_run: false
+  
+  # Packet capture
+  packet_capture:
+    enabled: false
+    capture_file: "test_traffic.pcap"
+    max_packets: 1000
+
+# Machine Roles and Capabilities
+machine_roles:
+  src_machine:
+    capabilities: ["traffic_generation", "coordination", "monitoring"]
+    requirements:
+      os: ["linux", "macos"]
+      python_version: ">=3.8"
+      memory_mb: 1024
+      
+  dst_machine:
+    capabilities: ["xdp_testing", "performance_monitoring", "coordination"]
+    requirements:
+      os: ["linux"]
+      kernel_version: ">=5.10"
+      memory_mb: 2048
+      xdp_support: true
+
+# Security Configuration (optional)
+security_config:
+  # API authentication
+  auth:
+    enabled: false
+    api_key: "your-api-key-here"
+  
+  # Network security
+  network:
+    allowed_ips: []  # Empty = allow all
+    ssl_enabled: false
+
+# Preset Configurations
+presets:
+  quick_test:
+    test_config:
+      duration: 30
+    traffic_config:
+      packet_rate: 1000
+      flows: 1
+      
+  performance_test:
+    test_config:
+      duration: 120
+    traffic_config:
+      packet_rate: 50000
+      flows: 8
+      threads: 4
+      
+  stress_test:
+    test_config:
+      duration: 300
+    traffic_config:
+      packet_rate: 100000
+      flows: 16
+      threads: 8 

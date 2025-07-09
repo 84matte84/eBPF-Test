@@ -1,7 +1,28 @@
 {
   "architecture": {
-    "type": "XDP/eBPF packet preprocessing module",
+    "type": "Production Two-Machine eBPF/XDP Testing Framework",
+    "deployment_model": "Distributed testing with coordination API",
     "layers": {
+      "coordination_layer": {
+        "api_server": "REST API for machine-to-machine coordination",
+        "client_library": "HTTP client for test coordination",
+        "discovery": "Network discovery and health monitoring"
+      },
+      "src_machine_layer": {
+        "traffic_generator": "Multi-threaded UDP packet generation",
+        "coordination_client": "Real-time test coordination",
+        "statistics_engine": "Comprehensive performance tracking"
+      },
+      "dst_machine_layer": {
+        "xdp_manager": "XDP program lifecycle management",
+        "system_monitor": "Real-time performance monitoring", 
+        "baseline_manager": "Userspace baseline testing"
+      },
+      "optimization_layer": {
+        "performance_optimizer": "System-level performance optimization",
+        "config_validator": "Configuration schema validation",
+        "profiling_suite": "Comprehensive performance profiling"
+      },
       "kernel_space": {
         "xdp_program": "BPF program for packet parsing and feature extraction",
         "maps": "BPF ring buffer for kernel-userspace communication"
@@ -20,29 +41,57 @@
       "include/xdp_preproc.h": "Public header file - Phase 4"
     },
     "benchmarks/": {
-      "baseline.c": "Traditional userspace baseline implementation",
-      "performance_test.c": "Benchmarking and comparison tools"
+      "baseline.c": "Traditional userspace baseline implementation - ✅ IMPLEMENTED",
+      "performance_test.c": "Benchmarking and comparison tools - ✅ IMPLEMENTED"
     },
-    "scripts/": {
+    "scripts/two_machine/": {
+      "coordination.py": "REST API coordination system (665 lines) - ✅ IMPLEMENTED",
+      "src_machine.py": "Cross-platform traffic generator (808 lines) - ✅ IMPLEMENTED",
+      "dst_machine.py": "Linux XDP testing coordinator (1072 lines) - ✅ IMPLEMENTED",
+      "config_validator.py": "Configuration validation system (537 lines) - ✅ IMPLEMENTED",
+      "performance_optimizer.py": "Performance optimization suite (747 lines) - ✅ IMPLEMENTED",
+      "config.yaml": "Comprehensive test configuration - ✅ IMPLEMENTED",
+      "README.md": "Complete usage documentation - ✅ IMPLEMENTED",
+      "ARCHITECTURE.md": "Technical architecture documentation - ✅ IMPLEMENTED",
+      "setup.sh": "Automated environment setup - ✅ IMPLEMENTED"
+    },
+    "scripts/legacy/": {
+      "generate_udp_traffic.py": "Legacy single-machine traffic generator - DEPRECATED",
+      "test_xdp.sh": "Legacy loopback testing - DEPRECATED",
+      "phase3_benchmark.sh": "Legacy performance comparison - DEPRECATED",
       "setup_environment.sh": "Development environment setup - ✅ IMPLEMENTED",
-      "generate_udp_traffic.py": "Python traffic generator - ✅ IMPLEMENTED",
-      "test_xdp.sh": "XDP integration testing - ✅ IMPLEMENTED",
       "verify_setup.sh": "System verification - ✅ IMPLEMENTED"
     },
     "docker/": {
-      "Dockerfile": "Container packaging",
-      "entrypoint.sh": "Container entry point"
+      "Dockerfile": "Container packaging - Future phase",
+      "entrypoint.sh": "Container entry point - Future phase"
     }
   },
   "data_flow": {
-    "ingress": "Raw packets at 10 Gbps → XDP program",
+    "coordination_flow": "src_machine ↔ REST API ↔ dst_machine (test synchronization)",
+    "network_path": "src_machine (traffic) → LAN → dst_machine (NIC) → XDP program",
     "processing": "Header parsing → feature extraction → ring buffer",
-    "egress": "Userspace polling → callback → ML/AI integration"
+    "egress": "Userspace polling → callback → ML/AI integration",
+    "optimization": "System detection → memory/CPU/network optimization → profiling"
+  },
+  "implementation_stats": {
+    "total_files": 9,
+    "total_lines": "3,831+ lines",
+    "total_size": "150KB+",
+    "classes": "25+ classes with comprehensive inheritance",
+    "error_handling": "Custom exception hierarchy with specific error types",
+    "validation": "Schema-based configuration validation",
+    "coordination": "Full REST API with health checks and discovery",
+    "optimization": "System capabilities detection and optimization",
+    "profiling": "Real-time performance monitoring and metrics collection"
   },
   "performance_targets": {
-    "throughput": "10 Gbps sustained",
-    "latency": "microsecond-scale per packet",
-    "efficiency": "≤ 8 cores for preprocessing",
-    "speedup": "≥ 5× vs traditional userspace"
+    "throughput": "10 Gbps sustained in real LAN environment",
+    "latency": "microsecond-scale per packet under network load",
+    "efficiency": "≤ 8 cores for preprocessing on actual hardware",
+    "speedup": "≥ 5× vs traditional userspace in LAN conditions",
+    "reliability": "Reproducible results across multiple test runs",
+    "coordination": "Sub-second test coordination and synchronization",
+    "optimization": "Automatic system optimization for high-rate testing"
   }
 } 
