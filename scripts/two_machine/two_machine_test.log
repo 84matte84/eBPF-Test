@@ -1,0 +1,32 @@
+2025-07-09 19:59:41,555 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-09 19:59:41,555 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-09 19:59:41,556 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-09 19:59:41,556 - __main__ - INFO - Destination machine ready for coordination
+2025-07-09 20:01:57,306 - __main__ - INFO - Received interrupt signal
+2025-07-09 20:01:57,753 - coordination.CoordinationServer - INFO - Coordination server stopped
+2025-07-09 20:01:57,753 - __main__ - INFO - Destination machine shutdown complete
+2025-07-09 20:09:01,699 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-09 20:09:01,699 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-09 20:09:01,700 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-09 20:09:01,701 - __main__ - INFO - Destination machine ready for coordination
+2025-07-09 20:16:54,742 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-09 20:16:54,743 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-09 20:16:54,743 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-09 20:16:54,744 - __main__ - INFO - Destination machine ready for coordination
+2025-07-09 20:18:08,286 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-09 20:18:08,286 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-09 20:18:08,287 - coordination.CoordinationServer - ERROR - Failed to bind to 0.0.0.0:8080: [Errno 98] Address already in use
+2025-07-09 20:18:08,287 - coordination.CoordinationServer - WARNING - Server is not running
+2025-07-09 20:18:08,287 - __main__ - INFO - Destination machine shutdown complete
+2025-07-09 20:18:08,287 - __main__ - ERROR - Unexpected error: Failed to bind to 0.0.0.0:8080: [Errno 98] Address already in use
+2025-07-09 20:18:19,418 - __main__ - INFO - Received interrupt signal
+2025-07-09 20:18:19,854 - coordination.CoordinationServer - INFO - Coordination server stopped
+2025-07-09 20:18:19,855 - __main__ - INFO - Destination machine shutdown complete
+2025-07-09 20:18:37,111 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-09 20:18:37,112 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-09 20:18:37,112 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-09 20:18:37,112 - __main__ - INFO - Destination machine ready for coordination
+2025-07-09 20:21:12,246 - __main__.DstMachineCoordinator - INFO - Starting xdp test
+2025-07-09 20:21:12,246 - __main__.SystemMonitor - INFO - Starting system monitoring
+2025-07-09 20:21:12,247 - __main__.XDPManager - INFO - Loading XDP program on interface enp5s0
+2025-07-09 20:21:14,247 - __main__.XDPManager - INFO - XDP program loaded successfully

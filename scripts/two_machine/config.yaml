@@ -32,7 +32,7 @@ network_config:
   # Source machine (traffic generator)
   src_machine:
     hostname: "macbook-src"
-    ip: "192.168.1.100"  # Will be auto-detected from MacBook
+    ip: "192.168.1.137"  # Will be auto-detected from MacBook
     control_port: 8080
     
   # Destination machine (XDP testing)
