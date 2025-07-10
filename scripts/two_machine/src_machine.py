@@ -230,9 +230,14 @@ class TrafficGenerator:
         # Pre-generate payload for performance
         self.payload = PayloadGenerator.generate_payload(self.traffic_config.packet_size)
         
-        # Setup signal handlers
-        signal.signal(signal.SIGINT, self._signal_handler)
-        signal.signal(signal.SIGTERM, self._signal_handler)
+        # Setup signal handlers only in main thread
+        try:
+            signal.signal(signal.SIGINT, self._signal_handler)
+            signal.signal(signal.SIGTERM, self._signal_handler)
+            self.logger.debug("Signal handlers configured")
+        except ValueError as e:
+            # Signal handlers can only be set in main thread - this is ok for coordination mode
+            self.logger.debug(f"Signal handler setup skipped (not main thread): {e}")
         
         self.logger.debug(f"TrafficGenerator initialized: {self.traffic_config}")
     
