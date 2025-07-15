@@ -11,19 +11,19 @@ test_config:
 
 # Traffic Generation Parameters
 traffic_config:
-  packet_rate: 10000  # Packets per second
+  packet_rate: 83333  # Packets per second (targets 1GB/s)
   packet_size: 1500   # Packet size in bytes (including headers)
-  flows: 4           # Number of concurrent UDP flows
-  threads: 2         # Number of traffic generation threads
+  flows: 8           # Number of concurrent UDP flows
+  threads: 4         # Number of traffic generation threads
   
   # Advanced traffic patterns
   patterns:
     - name: "constant_rate"
       type: "constant"
-      rate: 10000
+      rate: 83333
     - name: "burst_pattern"
       type: "burst"
-      burst_rate: 50000
+      burst_rate: 150000
       burst_duration: 1
       inter_burst_gap: 2
 
@@ -104,14 +104,18 @@ xdp_config:
 
 # Performance Targets (for validation)
 performance_targets:
-  # Minimum performance thresholds
-  min_throughput_pps: 5000
-  max_cpu_usage_percent: 50
-  max_memory_usage_mb: 100
+  # Minimum performance thresholds  
+  min_throughput_pps: 80000  # Near 1GB/s target
+  max_cpu_usage_percent: 80  # Allow higher CPU for 1GB/s
+  max_memory_usage_mb: 200   # More memory for high-rate processing
   
   # Expected improvements
   expected_cpu_efficiency_improvement: 5.0  # 5x improvement target
   expected_latency_reduction_percent: 80
+  
+  # High-rate performance targets
+  target_throughput_gbps: 1.0
+  max_packet_loss_percent: 0.5
 
 # Quality Assurance
 qa_config:
@@ -210,6 +214,14 @@ presets:
       duration: 120
     traffic_config:
       packet_rate: 50000
+      flows: 8
+      threads: 4
+      
+  one_gbps_test:
+    test_config:
+      duration: 60
+    traffic_config:
+      packet_rate: 83333
       flows: 8
       threads: 4
       
