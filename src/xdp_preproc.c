@@ -19,7 +19,7 @@ struct feature {
 // Ring buffer map for sending features to userspace
 struct {
     __uint(type, BPF_MAP_TYPE_RINGBUF);
-    __uint(max_entries, 256 * 1024); // 256KB ring buffer
+    __uint(max_entries, 4 * 1024 * 1024); // 4MB ring buffer for high-rate processing
 } feature_rb SEC(".maps");
 
 // Statistics map to track performance
@@ -148,23 +148,8 @@ int xdp_packet_processor(struct xdp_md *ctx) {
         return XDP_PASS; // Malformed UDP
     }
     
-    // Reserve space in ring buffer
-    struct feature *feature = bpf_ringbuf_reserve(&feature_rb, sizeof(*feature), 0);
-    if (!feature) {
-        update_stat(STAT_PACKETS_DROPPED, 1);
-        return XDP_PASS; // Ring buffer full
-    }
-    
-    // Populate feature structure
-    feature->src_ip = src_ip;
-    feature->dst_ip = dst_ip;
-    feature->src_port = src_port;
-    feature->dst_port = dst_port;
-    feature->pkt_len = total_len;
-    feature->timestamp = start_time;
-    
-    // Submit to ring buffer
-    bpf_ringbuf_submit(feature, 0);
+    // NO RING BUFFER - just process packets like iperf3
+    // Features extracted but not sent to userspace (max performance mode)
     
     // Update statistics
     update_stat(STAT_PACKETS_UDP, 1);

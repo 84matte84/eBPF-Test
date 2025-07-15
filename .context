@@ -33,7 +33,7 @@ The project has been transformed from a single-machine proof-of-concept into a c
 - **libbpf**: Standard library for BPF program management
 - **Two-machine architecture**: Real LAN environment for authentic performance validation
 - **REST API coordination**: HTTP-based machine-to-machine communication
-- **Cross-platform support**: Python-based traffic generation (Linux/Mac compatible)
+- **Cross-platform support**: Python-based traffic generation (Linux/Mac/Windows compatible)
 
 ### Architecture Principles
 - **Production-first approach**: Comprehensive error handling, validation, and monitoring
@@ -80,7 +80,7 @@ Provide drop-in module that AI/ML teams can integrate with minimal code changes:
 - Network discovery and machine communication
 
 ### Source Machine (src_machine.py - 808 lines)
-- Cross-platform traffic generator (Linux/Mac)
+- Cross-platform traffic generator (Linux/Mac/Windows)
 - Multi-threaded UDP packet generation
 - Real-time coordination with destination machine
 - Comprehensive statistics tracking and reporting
@@ -182,10 +182,11 @@ Provide drop-in module that AI/ML teams can integrate with minimal code changes:
 1. **Comprehensive Error Handling**: Custom exception hierarchy with specific error types
 2. **Production Code Quality**: Type hints, documentation, validation throughout
 3. **Performance Focus**: System optimization, profiling, and monitoring
-4. **Cross-Platform Support**: Works on Linux and macOS for traffic generation
+4. **Cross-Platform Support**: Works on Linux, macOS, and Windows for traffic generation
 5. **API-Driven Design**: REST API for machine coordination and control
 6. **Schema Validation**: Comprehensive configuration validation with detailed errors
 7. **Real-Time Monitoring**: Live performance metrics and system monitoring
 8. **Modular Architecture**: Reusable components with clear interfaces
-9. ****LAN-Validated Testing**: Proven two-machine testing approach with quantitative results
-10. **Network Verification**: tcpdump-confirmed end-to-end packet delivery and processing 
+9. **Windows Integration**: Native Windows support with PowerShell setup script
+10. **LAN-Validated Testing**: Proven two-machine testing approach with quantitative results
+11. **Network Verification**: tcpdump-confirmed end-to-end packet delivery and processing 
