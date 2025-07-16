@@ -15,7 +15,7 @@ The two-machine testing system provides realistic network performance validation
 │ • Traffic Generator │                     │ • XDP Program       │
 │ • Test Coordinator  │                     │ • Performance Mon   │
 │ • Cross-platform    │                     │ • Results Collector │
-│   (Linux/Mac)       │                     │   (Linux only)      │
+│   (Linux/Mac/Win)   │                     │   (Linux only)      │
 └─────────────────────┘                     └─────────────────────┘
 ```
 
@@ -30,7 +30,7 @@ The two-machine testing system provides realistic network performance validation
 - Configurable packet rates, sizes, and flows
 - Real-time performance monitoring
 - Coordination with dst_machine
-- macOS and Linux compatibility
+- Cross-platform compatibility (Linux, macOS, Windows)
 
 #### 2. `coordination.py` - Machine Coordination Protocol
 **Purpose**: REST API-based communication between machines

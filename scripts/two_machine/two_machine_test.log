@@ -30,3 +30,74 @@
 2025-07-09 20:21:12,246 - __main__.SystemMonitor - INFO - Starting system monitoring
 2025-07-09 20:21:12,247 - __main__.XDPManager - INFO - Loading XDP program on interface enp5s0
 2025-07-09 20:21:14,247 - __main__.XDPManager - INFO - XDP program loaded successfully
+2025-07-15 08:05:49,102 - __main__.DstMachineCoordinator - ERROR - Failed to initialize DstMachineCoordinator: Network interface 'enp5s0' does not exist
+2025-07-15 08:05:49,103 - __main__ - ERROR - Unexpected error: Network interface 'enp5s0' does not exist
+2025-07-15 08:05:49,103 - __main__ - DEBUG - Traceback: Traceback (most recent call last):
+  File "/home/MatteoS/eBPF-Test/scripts/two_machine/dst_machine.py", line 1036, in main
+    coordinator = DstMachineCoordinator(config)
+  File "/home/MatteoS/eBPF-Test/scripts/two_machine/dst_machine.py", line 737, in __init__
+    self.system_monitor = SystemMonitor(interface)
+  File "/home/MatteoS/eBPF-Test/scripts/two_machine/dst_machine.py", line 226, in __init__
+    raise SystemMonitorError(f"Network interface '{interface}' does not exist")
+SystemMonitorError: Network interface 'enp5s0' does not exist
+
+2025-07-15 08:06:54,383 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-15 08:06:54,384 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-15 08:06:54,412 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-15 08:06:54,412 - __main__ - INFO - Destination machine ready for coordination
+2025-07-15 12:35:46,234 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-15 12:35:46,234 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-15 12:35:46,263 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-15 12:35:46,263 - __main__ - INFO - Destination machine ready for coordination
+2025-07-15 12:36:45,975 - coordination.CoordinationServer - DEBUG - "GET /status HTTP/1.1" 200 -
+2025-07-15 12:38:48,538 - coordination.CoordinationServer - DEBUG - "POST /start_test HTTP/1.1" 400 -
+2025-07-15 12:39:46,616 - __main__.DstMachineCoordinator - INFO - Starting xdp test
+2025-07-15 12:39:46,617 - __main__.SystemMonitor - INFO - Starting system monitoring
+2025-07-15 12:39:46,617 - __main__.XDPManager - INFO - Loading XDP program on interface eno1
+2025-07-15 12:39:46,617 - __main__.XDPManager - DEBUG - Loader command: ../../build/xdp_loader eno1 ../../build/xdp_preproc.o --mode native
+2025-07-15 12:39:48,622 - __main__.XDPManager - ERROR - XDP loader failed: libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object '../../build/xdp_preproc.o'
+Error: failed to load BPF object: Operation not permitted
+
+2025-07-15 12:39:48,622 - __main__.XDPManager - ERROR - Failed to load XDP program: XDP loader failed: libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object '../../build/xdp_preproc.o'
+Error: failed to load BPF object: Operation not permitted
+
+2025-07-15 12:39:48,624 - __main__.XDPManager - DEBUG - Traceback: Traceback (most recent call last):
+  File "/home/MatteoS/eBPF-Test/scripts/two_machine/dst_machine.py", line 458, in load_program
+    raise XDPError(error_msg)
+XDPError: XDP loader failed: libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object '../../build/xdp_preproc.o'
+Error: failed to load BPF object: Operation not permitted
+
+
+2025-07-15 12:39:48,624 - __main__.SystemMonitor - INFO - Stopping system monitoring
+2025-07-15 12:39:48,624 - coordination.CoordinationServer - DEBUG - "POST /start_test HTTP/1.1" 400 -
+2025-07-15 12:42:12,116 - __main__.XDPManager - INFO - XDP setup validation passed
+2025-07-15 12:42:12,116 - __main__.DstMachineCoordinator - INFO - DstMachineCoordinator initialized successfully
+2025-07-15 12:42:12,144 - coordination.CoordinationServer - INFO - Coordination server started on 0.0.0.0:8080
+2025-07-15 12:42:12,144 - __main__ - INFO - Destination machine ready for coordination
+2025-07-15 12:42:52,727 - coordination.CoordinationServer - DEBUG - "GET /status HTTP/1.1" 200 -
+2025-07-15 12:43:08,783 - __main__.DstMachineCoordinator - INFO - Starting xdp test
+2025-07-15 12:43:08,784 - __main__.SystemMonitor - INFO - Starting system monitoring
+2025-07-15 12:43:08,784 - __main__.XDPManager - INFO - Loading XDP program on interface eno1
+2025-07-15 12:43:08,784 - __main__.XDPManager - DEBUG - Loader command: ../../build/xdp_loader eno1 ../../build/xdp_preproc.o --mode native
+2025-07-15 12:43:10,789 - __main__.XDPManager - INFO - XDP program loaded successfully
+2025-07-15 12:43:10,789 - coordination.CoordinationServer - DEBUG - "POST /start_test HTTP/1.1" 200 -
+2025-07-15 12:46:16,414 - coordination.CoordinationServer - DEBUG - "GET /test_status HTTP/1.1" 404 -
+2025-07-15 12:47:41,034 - coordination.CoordinationServer - DEBUG - "GET /status HTTP/1.1" 200 -
+2025-07-15 12:47:50,716 - coordination.CoordinationServer - DEBUG - "GET /results HTTP/1.1" 200 -
+2025-07-15 12:48:06,105 - __main__.DstMachineCoordinator - INFO - Stopping xdp test
+2025-07-15 12:48:06,105 - __main__.XDPManager - INFO - Unloading XDP program
+2025-07-15 12:48:07,521 - __main__.XDPManager - INFO - XDP loader terminated gracefully
+2025-07-15 12:48:07,521 - __main__.XDPManager - INFO - XDP program unloaded successfully
+2025-07-15 12:48:07,525 - __main__.SystemMonitor - INFO - Stopping system monitoring
+2025-07-15 12:48:07,526 - coordination.CoordinationServer - DEBUG - "POST /stop_test HTTP/1.1" 200 -
+2025-07-15 12:52:04,254 - __main__.DstMachineCoordinator - WARNING - No active test to stop
+2025-07-15 12:52:04,255 - coordination.CoordinationServer - DEBUG - "POST /stop_test HTTP/1.1" 200 -
+2025-07-15 12:52:06,351 - __main__.DstMachineCoordinator - INFO - Starting xdp test
+2025-07-15 12:52:06,351 - __main__.SystemMonitor - INFO - Starting system monitoring
+2025-07-15 12:52:06,352 - __main__.XDPManager - INFO - Loading XDP program on interface eno1
+2025-07-15 12:52:06,352 - __main__.XDPManager - DEBUG - Loader command: ../../build/xdp_loader eno1 ../../build/xdp_preproc.o --mode native
+2025-07-15 12:52:08,354 - __main__.XDPManager - INFO - XDP program loaded successfully
+2025-07-15 12:52:08,356 - coordination.CoordinationServer - DEBUG - "POST /start_test HTTP/1.1" 200 -

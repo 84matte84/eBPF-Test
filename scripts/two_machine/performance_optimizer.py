@@ -51,24 +51,49 @@ class SystemCapabilities:
         # Get network interfaces
         network_interfaces = list(psutil.net_if_addrs().keys())
         
-        # Check NUMA support
-        supports_numa = os.path.exists('/sys/devices/system/node')
+        # Platform-specific capability detection
+        system = platform.system()
         
-        # Check huge pages support
-        supports_huge_pages = os.path.exists('/proc/sys/vm/nr_hugepages')
+        if system == 'Linux':
+            # Linux-specific detection
+            supports_numa = os.path.exists('/sys/devices/system/node')
+            supports_huge_pages = os.path.exists('/proc/sys/vm/nr_hugepages')
+            supports_cpu_affinity = hasattr(os, 'sched_setaffinity')
+            
+            # Get max socket buffer size from Linux
+            max_socket_buffer = 0
+            try:
+                with open('/proc/sys/net/core/rmem_max', 'r') as f:
+                    max_socket_buffer = int(f.read().strip())
+            except (IOError, ValueError):
+                max_socket_buffer = 212992  # Default Linux value
+                
+        elif system == 'Windows':
+            # Windows-specific detection
+            supports_numa = cls._detect_windows_numa()
+            supports_huge_pages = cls._detect_windows_large_pages()
+            supports_cpu_affinity = hasattr(os, 'sched_setaffinity') or cls._detect_windows_affinity()
+            
+            # Windows default socket buffer size
+            max_socket_buffer = 65536  # Default Windows value
+            
+        elif system == 'Darwin':  # macOS
+            # macOS-specific detection
+            supports_numa = False  # macOS doesn't expose NUMA through filesystem
+            supports_huge_pages = False  # macOS handles this differently
+            supports_cpu_affinity = hasattr(os, 'sched_setaffinity')
+            
+            # macOS default socket buffer size
+            max_socket_buffer = 262144  # Default macOS value
+            
+        else:
+            # Default values for unknown systems
+            supports_numa = False
+            supports_huge_pages = False
+            supports_cpu_affinity = hasattr(os, 'sched_setaffinity')
+            max_socket_buffer = 65536
         
-        # Check CPU affinity support
-        supports_cpu_affinity = hasattr(os, 'sched_setaffinity')
-        
-        # Get max socket buffer size
-        max_socket_buffer = 0
-        try:
-            with open('/proc/sys/net/core/rmem_max', 'r') as f:
-                max_socket_buffer = int(f.read().strip())
-        except (IOError, ValueError):
-            max_socket_buffer = 212992  # Default Linux value
-        
-        # Get kernel version
+        # Get kernel/OS version
         kernel_version = platform.release()
         
         return cls(
@@ -81,6 +106,52 @@ class SystemCapabilities:
             max_socket_buffer=max_socket_buffer,
             kernel_version=kernel_version
         )
+    
+    @staticmethod
+    def _detect_windows_numa() -> bool:
+        """Detect NUMA support on Windows."""
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['wmic', 'computersystem', 'get', 'NumberOfProcessors', '/value'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            # If we can query processor info, assume NUMA might be available
+            return result.returncode == 0 and 'NumberOfProcessors' in result.stdout
+        except (subprocess.SubprocessError, FileNotFoundError):
+            return False
+    
+    @staticmethod
+    def _detect_windows_large_pages() -> bool:
+        """Detect large page support on Windows."""
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['powershell', '-Command', 'Get-WmiObject -Class Win32_PageFileUsage'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            return result.returncode == 0
+        except (subprocess.SubprocessError, FileNotFoundError):
+            return False
+    
+    @staticmethod
+    def _detect_windows_affinity() -> bool:
+        """Detect CPU affinity support on Windows."""
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['wmic', 'process', 'where', 'name="python.exe"', 'get', 'ProcessId'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            return result.returncode == 0
+        except (subprocess.SubprocessError, FileNotFoundError):
+            return False
 
 
 class MemoryOptimizer:
@@ -255,7 +326,8 @@ class NetworkOptimizer:
                 pass
             
             # Platform-specific optimizations
-            if platform.system() == 'Linux':
+            system = platform.system()
+            if system == 'Linux':
                 # Enable SO_REUSEPORT on Linux for better load balancing
                 try:
                     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
@@ -266,6 +338,29 @@ class NetworkOptimizer:
                 # Set IP_TOS for better QoS
                 try:
                     sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, 0x10)  # Low delay
+                    optimizations['ip_tos'] = True
+                except (OSError, AttributeError):
+                    pass
+            elif system == 'Windows':
+                # Windows-specific socket optimizations
+                try:
+                    # Set SO_EXCLUSIVEADDRUSE on Windows for better port management
+                    sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+                    optimizations['exclusive_addr_use'] = True
+                except (OSError, AttributeError):
+                    pass
+                
+                # Disable Nagle's algorithm for lower latency
+                try:
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+                    optimizations['tcp_nodelay'] = True
+                except (OSError, AttributeError):
+                    pass  # Not applicable for UDP sockets
+            elif system == 'Darwin':  # macOS
+                # macOS-specific optimizations
+                try:
+                    # Set IP_TOS for better QoS on macOS
+                    sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, 0x10)
                     optimizations['ip_tos'] = True
                 except (OSError, AttributeError):
                     pass

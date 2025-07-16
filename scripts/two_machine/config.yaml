@@ -31,15 +31,15 @@ traffic_config:
 network_config:
   # Source machine (traffic generator)
   src_machine:
-    hostname: "macbook-src"
-    ip: "192.168.1.137"  # Will be auto-detected from MacBook
+    hostname: "windows-src"
+    ip: "10.5.2.160"  # Windows machine IP (same network)
     control_port: 8080
     
   # Destination machine (XDP testing)
   dst_machine:
     hostname: "linux-dst"
-    ip: "192.168.1.35"  # Current machine IP
-    interface: "enp5s0"  # Current machine interface
+    ip: "10.5.2.111"  # Current machine IP (auto-detected)
+    interface: "eno1"  # Current machine interface
     control_port: 8080
     
   # Traffic ports (will be used round-robin for multiple flows)
@@ -176,7 +176,7 @@ machine_roles:
   src_machine:
     capabilities: ["traffic_generation", "coordination", "monitoring"]
     requirements:
-      os: ["linux", "macos"]
+      os: ["linux", "macos", "windows"]
       python_version: ">=3.8"
       memory_mb: 1024
       

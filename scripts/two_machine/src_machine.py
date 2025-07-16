@@ -177,6 +177,97 @@ class PayloadGenerator:
         return payload
 
 
+class NetworkManager:
+    """Manages network interface detection and configuration across platforms."""
+    
+    @staticmethod
+    def get_active_interfaces() -> List[str]:
+        """Get list of active network interfaces."""
+        try:
+            import psutil
+            interfaces = []
+            net_if_stats = psutil.net_if_stats()
+            
+            for interface, stats in net_if_stats.items():
+                # Skip loopback interfaces
+                if interface.lower().startswith('lo') or 'loopback' in interface.lower():
+                    continue
+                
+                # Check if interface is up
+                if stats.isup:
+                    interfaces.append(interface)
+            
+            return interfaces
+        except Exception:
+            return []
+    
+    @staticmethod
+    def get_interface_ip(interface: str) -> Optional[str]:
+        """Get IP address for a specific interface."""
+        try:
+            import psutil
+            net_if_addrs = psutil.net_if_addrs()
+            
+            if interface in net_if_addrs:
+                for addr in net_if_addrs[interface]:
+                    if addr.family == socket.AF_INET:  # IPv4
+                        return addr.address
+            
+            return None
+        except Exception:
+            return None
+    
+    @staticmethod
+    def get_default_interface_ip() -> Optional[str]:
+        """Get IP address of the default network interface."""
+        try:
+            # Create a dummy socket to determine default interface
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                # Connect to a dummy address (doesn't have to be reachable)
+                s.connect(("8.8.8.8", 80))
+                return s.getsockname()[0]
+        except Exception:
+            return None
+    
+    @staticmethod
+    def get_windows_interface_info() -> Dict[str, Any]:
+        """Get Windows-specific network interface information."""
+        if platform.system() != 'Windows':
+            return {}
+        
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['ipconfig', '/all'], 
+                capture_output=True, 
+                text=True, 
+                timeout=10
+            )
+            
+            if result.returncode == 0:
+                # Parse ipconfig output for interface details
+                interfaces = {}
+                current_adapter = None
+                
+                for line in result.stdout.split('\n'):
+                    line = line.strip()
+                    if 'adapter' in line.lower() and ':' in line:
+                        current_adapter = line.split(':')[0].strip()
+                        interfaces[current_adapter] = {}
+                    elif current_adapter and 'IPv4 Address' in line:
+                        ip = line.split(':')[-1].strip().rstrip('(Preferred)')
+                        interfaces[current_adapter]['ip'] = ip
+                    elif current_adapter and 'Physical Address' in line:
+                        mac = line.split(':')[-1].strip()
+                        interfaces[current_adapter]['mac'] = mac
+                
+                return interfaces
+        except Exception:
+            pass
+        
+        return {}
+
+
 class SocketManager:
     """Manages socket creation and configuration for traffic generation."""
     
@@ -191,12 +282,29 @@ class SocketManager:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 65536)
             
             # Platform-specific optimizations
-            if platform.system() == 'Linux':
+            system = platform.system()
+            if system == 'Linux':
                 # On Linux, we can set additional socket options
                 try:
                     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
                 except (OSError, AttributeError):
                     pass  # Not available on all Linux versions
+            elif system == 'Windows':
+                # Windows-specific optimizations
+                try:
+                    # Set SO_EXCLUSIVEADDRUSE on Windows for better port management
+                    sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+                except (OSError, AttributeError):
+                    pass  # Not available on all Windows versions
+                
+                try:
+                    # Increase receive buffer size on Windows
+                    sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65536)
+                except (OSError, AttributeError):
+                    pass
+            elif system == 'Darwin':  # macOS
+                # macOS optimizations (existing behavior)
+                pass
             
             return sock
             

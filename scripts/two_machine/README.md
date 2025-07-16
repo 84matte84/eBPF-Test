@@ -29,11 +29,11 @@ The two-machine testing system provides realistic network performance validation
 ## 📋 System Requirements
 
 ### src_machine (Traffic Generator)
-- **OS**: Linux or macOS
+- **OS**: Linux, macOS, or Windows
 - **Python**: ≥ 3.8
 - **Memory**: ≥ 1GB RAM
 - **Network**: LAN connectivity to dst_machine
-- **Dependencies**: PyYAML, requests
+- **Dependencies**: PyYAML, requests, psutil
 
 ### dst_machine (XDP Testing)
 - **OS**: Linux (Ubuntu 22.04+ recommended)
@@ -68,14 +68,15 @@ sudo python3 dst_machine.py --config config.yaml --check-only
 sudo python3 dst_machine.py --config config.yaml
 ```
 
-### 2. Setup src_machine (Linux/Mac)
+### 2. Setup src_machine (Linux/Mac/Windows)
 
+#### Linux/macOS Setup
 ```bash
 # On the source machine (Linux or macOS)
 cd eBPF-Test/scripts/two_machine
 
 # Install Python dependencies
-pip3 install pyyaml requests
+pip3 install pyyaml requests psutil
 
 # Update configuration
 nano config.yaml
@@ -86,6 +87,28 @@ nano config.yaml
 
 # Start source machine traffic generator
 python3 src_machine.py --config config.yaml
+```
+
+#### Windows Setup
+```powershell
+# On the Windows source machine
+cd eBPF-Test\scripts\two_machine
+
+# Run Windows setup script (PowerShell as Administrator recommended)
+.\setup_windows.ps1
+
+# Or manually install Python dependencies
+pip install pyyaml requests psutil
+
+# Update configuration
+notepad config.yaml
+
+# Update these fields:
+# network_config.src_machine.ip: "192.168.1.100"   # Actual IP
+# network_config.dst_machine.ip: "192.168.1.101"   # dst_machine IP
+
+# Start source machine traffic generator
+python src_machine.py --config config.yaml
 ```
 
 ### 3. Run Test
@@ -313,6 +336,29 @@ sudo python3 dst_machine.py --config config.yaml
 
 # Check capabilities
 sudo python3 dst_machine.py --config config.yaml --check-only
+```
+
+**Windows Firewall blocking connections**:
+```powershell
+# Allow eBPF-Test through Windows Firewall (run as Administrator)
+New-NetFirewallRule -DisplayName "eBPF-Test Coordination" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
+New-NetFirewallRule -DisplayName "eBPF-Test Traffic" -Direction Outbound -Protocol UDP -LocalPort 12345-12348 -Action Allow
+
+# Or disable Windows Firewall temporarily (not recommended for production)
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+```
+
+**Windows Python/pip issues**:
+```powershell
+# Check Python installation
+python --version
+pip --version
+
+# Install/upgrade pip
+python -m pip install --upgrade pip
+
+# Install packages with elevated privileges if needed
+pip install --user pyyaml requests psutil
 ```
 
 **Traffic generation performance issues**:
